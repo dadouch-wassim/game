@@ -1,1 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEN 10: Heroic Run</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="assets/images/omnitrix.png">
+    
+    <!-- Police d'écriture style Ben 10 -->
+    <style>
+        @font-face {
+            font-family: 'Ben10';
+            src: url('assets/fonts/ben10.ttf') format('truetype');
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Écran de démarrage -->
+        <div id="start-screen" class="screen">
+            <div class="title-container">
+                <h1 class="main-title">BEN 10</h1>
+                <h2 class="sub-title">HEROIC RUN</h2>
+                <div class="omnitrix-animation"></div>
+            </div>
+            
+            <div class="character-select">
+                <h3>CHOISIS TON ALIEN DE DÉPART</h3>
+                <div class="aliens-grid">
+                    <div class="alien-card" data-alien="heatblast" data-unlocked="true">
+                        <div class="alien-icon" style="background-color: #ff6b35;"></div>
+                        <span>Heatblast</span>
+                        <div class="alien-ability">🔥 Feu</div>
+                    </div>
+                    <div class="alien-card" data-alien="xlr8" data-unlocked="true">
+                        <div class="alien-icon" style="background-color: #4287f5;"></div>
+                        <span>XLR8</span>
+                        <div class="alien-ability">⚡ Vitesse</div>
+                    </div>
+                    <div class="alien-card" data-alien="diamondhead" data-unlocked="false">
+                        <div class="alien-icon" style="background-color: #00ff88;"></div>
+                        <span>Diamondhead</span>
+                        <div class="alien-ability">💎 Cristal</div>
+                        <div class="lock-icon">🔒 Niv. 5</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls-info">
+                <div class="control-item">
+                    <div class="key">SPACE</div>
+                    <span>SAUTER</span>
+                </div>
+                <div class="control-item">
+                    <div class="key">S</div>
+                    <span>TRANSFORMER</span>
+                </div>
+                <div class="control-item">
+                    <div class="key">P</div>
+                    <span>PAUSE</span>
+                </div>
+            </div>
+            
+            <button id="start-btn" class="btn-primary">COMMENCER LA MISSION</button>
+            <button id="instructions-btn" class="btn-secondary">INSTRUCTIONS</button>
+            
+            <div class="high-score">
+                <span>MEILLEUR SCORE:</span>
+                <span id="high-score-value">0</span>
+            </div>
+        </div>
 
+        <!-- Écran de jeu -->
+        <div id="game-screen" class="screen hidden">
+            <div class="game-header">
+                <div class="omnitrix-display">
+                    <div class="omnitrix-time">00:00</div>
+                    <div class="alien-name">HEATBLAST</div>
+                    <div class="energy-bar">
+                        <div class="energy-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-icon">⭐</span>
+                        <span id="score">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">🪙</span>
+                        <span id="coins">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-icon">🏃</span>
+                        <span id="distance">0m</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-container">
+                <canvas id="game-canvas"></canvas>
+                
+                <div class="abilities">
+                    <button id="transform-btn" class="ability-btn">
+                        <img src="assets/images/omnitrix.png" alt="Omnitrix">
+                        <span>TRANSFORMER</span>
+                        <div class="cooldown"></div>
+                    </button>
+                    
+                    <button id="special-btn" class="ability-btn">
+                        <div class="special-icon">🔥</div>
+                        <span>POUVOIR SPÉCIAL</span>
+                        <div class="cooldown"></div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mobile-controls">
+                <button id="jump-btn" class="mobile-btn">SAUTER</button>
+                <button id="transform-mobile-btn" class="mobile-btn">OMNITRIX</button>
+            </div>
+        </div>
+
+        <!-- Écran de pause -->
+        <div id="pause-screen" class="screen hidden">
+            <h2>PAUSE</h2>
+            <div class="pause-stats">
+                <div class="pause-stat">
+                    <span>Score:</span>
+                    <span id="pause-score">0</span>
+                </div>
+                <div class="pause-stat">
+                    <span>Distance:</span>
+                    <span id="pause-distance">0m</span>
+                </div>
+                <div class="pause-stat">
+                    <span>Aliens débloqués:</span>
+                    <span id="pause-aliens">1/10</span>
+                </div>
+            </div>
+            <button id="resume-btn" class="btn-primary">REPRENDRE</button>
+            <button id="restart-btn" class="btn-secondary">RECOMMENCER</button>
+            <button id="quit-btn" class="btn-secondary">QUITTER</button>
+        </div>
+
+        <!-- Écran game over -->
+        <div id="game-over-screen" class="screen hidden">
+            <h2 class="game-over-title">MISSION ÉCHOUÉE!</h2>
+            <div class="game-over-stats">
+                <div class="game-over-stat">
+                    <span>SCORE FINAL:</span>
+                    <span class="stat-value" id="final-score">0</span>
+                </div>
+                <div class="game-over-stat">
+                    <span>DISTANCE:</span>
+                    <span class="stat-value" id="final-distance">0m</span>
+                </div>
+                <div class="game-over-stat">
+                    <span>PIÈCES COLLECTÉES:</span>
+                    <span class="stat-value" id="final-coins">0</span>
+                </div>
+                <div class="game-over-stat">
+                    <span>NOUVEAUX ALIENS:</span>
+                    <span class="stat-value" id="new-aliens">0</span>
+                </div>
+            </div>
+            
+            <div class="unlocked-aliens">
+                <h3>ALIENS DÉBLOQUÉS</h3>
+                <div id="aliens-list" class="aliens-list">
+                    <!-- Rempli dynamiquement -->
+                </div>
+            </div>
+            
+            <button id="play-again-btn" class="btn-primary">REESSAYER</button>
+            <button id="menu-btn" class="btn-secondary">MENU PRINCIPAL</button>
+            
+            <div class="share-score">
+                <p>Défie tes amis!</p>
+                <button id="share-btn" class="btn-share">
+                    <span>📢 PARTAGER MON SCORE</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div id="instructions-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>COMMENT JOUER</h3>
+            <div class="instructions">
+                <div class="instruction">
+                    <h4>🎮 CONTROLES</h4>
+                    <p><strong>SPACE</strong> - Sauter par-dessus les obstacles</p>
+                    <p><strong>S</strong> - Te transformer en alien différent</p>
+                    <p><strong>P</strong> - Mettre en pause le jeu</p>
+                    <p><strong>CLIC</strong> - Activer le pouvoir spécial</p>
+                </div>
+                
+                <div class="instruction">
+                    <h4>👽 ALIENS</h4>
+                    <p>Chaque alien a des capacités uniques:</p>
+                    <ul>
+                        <li><strong>Heatblast</strong>: Lance des boules de feu</li>
+                        <li><strong>XLR8</strong>: Course ultra-rapide</li>
+                        <li><strong>Diamondhead</strong> (Niv.5): Peut briser les obstacles</li>
+                        <li><strong>FourArms</strong> (Niv.10): Force surhumaine</li>
+                    </ul>
+                </div>
+                
+                <div class="instruction">
+                    <h4>⭐ OBJECTIF</h4>
+                    <p>Course le plus loin possible, évite les obstacles, collecte les pièces pour débloquer de nouveaux aliens!</p>
+                </div>
+            </div>
+            <button id="close-instructions-btn" class="btn-primary">J'AI COMPRIS!</button>
+        </div>
+    </div>
+
+    <audio id="jump-sound" preload="auto"></audio>
+    <audio id="transform-sound" preload="auto"></audio>
+    <audio id="coin-sound" preload="auto"></audio>
+    <audio id="game-over-sound" preload="auto"></audio>
+    <audio id="background-music" loop preload="auto"></audio>
+
+    <script src="game.js"></script>
+    <script>
+        // Enregistrement du Service Worker pour PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker enregistré avec succès');
+                    })
+                    .catch(error => {
+                        console.log('Échec enregistrement Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
