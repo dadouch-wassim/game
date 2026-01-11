@@ -1,1 +1,56 @@
 
+{
+  "name": "BEN 10: Heroic Run",
+  "short_name": "Ben10Run",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#00FF88",
+  "description": "Jeu de parcours infini Ben 10 - Cours, saute, transforme-toi!",
+  "orientation": "landscape",
+  "scope": "/",
+  "lang": "fr",
+  "categories": ["games", "entertainment", "action"],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./screenshots/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    },
+    {
+      "src": "./screenshots/screenshot2.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Nouvelle partie",
+      "short_name": "Jouer",
+      "description": "Commencer une nouvelle mission",
+      "url": "./index.html?action=play"
+    },
+    {
+      "name": "Aliens débloqués",
+      "short_name": "Aliens",
+      "description": "Voir les aliens débloqués",
+      "url": "./index.html?action=aliens"
+    }
+  ]
+}
